@@ -1,25 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
+import * as  React from 'react';
 import './App.css';
+import { createStore, applyMiddleware } from 'redux';
+import {RootEpics, RootReducer, RootState} from "./redux/roots/Roots";
+import {createEpicMiddleware} from "redux-observable";
+import {useEffect} from "react";
+
+import {Post} from "./posts/post";
+import {Provider, useSelector} from "react-redux";
+import {Root} from "./Root";
+
+
+export const epicMiddleware=createEpicMiddleware()
+export  function configureStore(){
+    const store=createStore(RootReducer,applyMiddleware(epicMiddleware))
+
+    epicMiddleware.run(RootEpics)
+    return store
+}
+
 
 const App: React.FC = () => {
+
   return (
+      <Provider store={configureStore()}>
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        App
+        <Root/>
     </div>
+      </Provider>
   );
 }
 
